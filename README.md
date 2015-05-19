@@ -1,12 +1,17 @@
 #DirectKafkaWordCount evaluation
 
-(Fix the layout of this)
+(update to 'English only')
 
 ## DirectKafkaWordCount exemplet
 - Steg 1: starta Intellij, projekt kafkadirect
 - Steg 2: starta 4 term-fönster (för Zookeeper och Kafka). cd kafka_2.10-0.8.2.0 för alla
-- Starta Kafka (se nedan)
-
+- Start Kafka (see below)
+- To STOP everything, do in the following order: 
+    - Stop Kafka consumer
+    - Stop Kafka producer
+    - Stop Kafka
+    - Stop Zookeeper
+    
 ### From 1.3 Quick Start
 
 https://kafka.apache.org/documentation.html#quickstart
@@ -61,6 +66,16 @@ Note, test is your latest topic
     cat /filename | bin/kafka-console-producer.sh –broker-list localhost:9092 –topic test
 
     cat ~/spark-1.3.1/data/eeg/chb02_16_data.csv | bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+ - Alt 3 A changing file, use head -F
+
+Note, test is your latest topic
+
+    head -F /filename | bin/kafka-console-producer.sh –broker-list localhost:9092 –topic test
+
+    head -F  ~/spark-1.3.1/data/eeg/chb02_16_data.csv | bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+Now whenever file is changing, kafka picks it up.
 
 - Step 5: Start a consumer (or start before producer. in the file example)
 

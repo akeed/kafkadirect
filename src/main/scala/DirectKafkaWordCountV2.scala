@@ -34,7 +34,9 @@ import org.apache.spark.streaming.kafka._
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 
-object DirectKafkaWordCount {
+object DirectKafkaWordCountV2 {
+
+  case class EEG(time: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
 
   def main(args: Array[String]) {
     if (args.length < 2) {
@@ -62,7 +64,7 @@ object DirectKafkaWordCount {
       ssc, kafkaParams, topicsSet)
 
     val lines = messages.map(_._2)
-    val words = lines.flatMap(_.split(" "))
+    val words = lines.flatMap(_.split(","))
 
     // Convert RDDs of the words DStream to DataFrame and run SQL query
     words.foreachRDD((rdd: RDD[String], time: Time) => {
@@ -70,49 +72,29 @@ object DirectKafkaWordCount {
       val sqlContext = SQLContextSingleton.getInstance(rdd.sparkContext)
       import sqlContext.implicits._
 
-      // Convert RDD[String] to RDD[case class] to DataFrame - file input
-
-      val wordsDataFrame = rdd.map(s => s.split(",")).map(
-        s => EEG(s(0).toDouble,
-          s(1).toDouble,
-          s(2).toDouble,
-          s(3).toDouble,
-          s(4).toDouble,
-          s(5).toDouble,
-          s(6).toDouble,
-          s(7).toDouble,
-          s(8).toDouble,
-          s(9).toDouble,
-          s(10).toDouble,
-          s(11).toDouble,
-          s(12).toDouble,
-          s(13).toDouble,
-          s(14).toDouble,
-          s(15).toDouble,
-          s(16).toDouble)
-      ).toDF()
-
-      // Convert RDD[String] to RDD[case class] to DataFrame - simple input
-      //val wordsDataFrame = rdd.map(w => Record(w)).toDF()
+      // Convert RDD[String] to RDD[case class] to DataFrame
+      val wordsDataFrame = rdd.map(w => Record(w)).toDF()
 
       // Register as table
       wordsDataFrame.registerTempTable("words")
 
       // Do word count on table using SQL and print it
       val wordCountsDataFrame =
-        //sqlContext.sql("select word, count(*) as total from words group by word")
-        sqlContext.sql("select second, s1, count(*) as total from words group by second, s1")
-
+        sqlContext.sql("select word, count(*) as total from words group by word")
       println(s"========= $time =========")
-      //wordCountsDataFrame.select("second").show()
       wordCountsDataFrame.show()
     })
 
+ /* old   // Get the lines, split them into words, count the words and print
+    val lines = messages.map(_._2)
+    val words = lines.flatMap(_.split(" "))
+    val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
+    println("Messages.count and wordCounts")
+    messages.count().print()
+    wordCounts.print()
+*/
     // Start the computation
     ssc.start()
     ssc.awaitTermination()
   }
 }
-
-/** Case class for converting RDD to DataFrame */
-case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
