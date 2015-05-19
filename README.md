@@ -1,11 +1,17 @@
-DirectKafkaWordCount exemplet - med stdin som producer i Kafka
-	•	Starta Kafka
-	•	From 1.3 Quick Start
-	•	https://kafka.apache.org/documentation.html#quickstart
-	•	This tutorial assumes you are starting fresh and have no existing Kafka or ZooKeeper data.
-	•	Step 1: Download the code
-	•	Download the 0.8.2.0 release and un-tar it.
-	•	> tar -xzf kafka_2.10-0.8.2.0.tgz
+#DirectKafkaWordCount exemplet - med stdin som producer i Kafka
+
+(Fix the layout of this)
+
+## Start Kafka
+
+### From 1.3 Quick Start
+
+https://kafka.apache.org/documentation.html#quickstart
+
+- This tutorial assumes you are starting fresh and have no existing Kafka or ZooKeeper data.
+    - Step 1: Download the code
+	    - Download the 0.8.2.0 release and un-tar it.
+	    - tar -xzf kafka_2.10-0.8.2.0.tgz
 	•	> cd kafka_2.10-0.8.2.0
 	•	Step 2: Start the server
 	•	Kafka uses ZooKeeper so you need to first start a ZooKeeper server if you don't already have one. You can use the convenience script packaged with kafka to get a quick-and-dirty single-node ZooKeeper instance.
