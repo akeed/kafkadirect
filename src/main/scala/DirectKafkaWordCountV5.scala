@@ -34,7 +34,7 @@ import org.apache.spark.streaming.kafka._
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 
-object DirectKafkaWordCount {
+object DirectKafkaWordCountV5 {
 
   def main(args: Array[String]) {
     if (args.length < 2) {
@@ -105,16 +105,6 @@ object DirectKafkaWordCount {
 
       ///val top = sqlContext.sql("select second, s1 from words where s1 > 1400 group by second, s1 order by second")
 
-      val wordCountsDataFrameStat =
-        sqlContext.sql("select count(s1), avg(s1), min(s1), max(s1) from words")
-//      sqlContext.sql("select count(s1), avg(s1), stddev(s1), min(s1), max(s1) from words group by second, s1")
-
-      val Count =   wordsDataFrame.count()
-      val Mean =    wordsDataFrame.groupBy("s1").mean()
-
-
-  //    val Variance =   wordsDataFrame.select("s1").collect().map(s => (s(1) - Count) * (s(1) - Mean))
-
       println(s"========= $time =========")
       //wordCountsDataFrame.select("second").show()
       //wordCountsDataFrame.show()
@@ -122,9 +112,6 @@ object DirectKafkaWordCount {
       ///top.show()
       wordCountsDataFrame.describe("second", "s1", "s2").show()
 
-    //  println(s"Variance = " + Variance)
-
-      println("Count and Mean = " + Count + " + " + Mean)
 
     })
 
@@ -132,8 +119,7 @@ object DirectKafkaWordCount {
     ssc.start()
     ssc.awaitTermination()
   }
-
 }
 
 /** Case class for converting RDD to DataFrame */
-case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
+///case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)

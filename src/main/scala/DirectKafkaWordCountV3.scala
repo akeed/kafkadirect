@@ -34,7 +34,7 @@ import org.apache.spark.streaming.kafka._
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 
-object DirectKafkaWordCount {
+object DirectKafkaWordCountV3 {
 
   def main(args: Array[String]) {
     if (args.length < 2) {
@@ -52,8 +52,8 @@ object DirectKafkaWordCount {
     val Array(brokers, topics) = args
 
     // Create context with 2 second batch interval
-    val sparkConf = new SparkConf().setAppName("DirectKafkaWordCount")
-    val ssc =  new StreamingContext(sparkConf, Seconds(1))
+    val sparkConf = new SparkConf().setAppName("DirectKafkaWordCountV3")
+    val ssc =  new StreamingContext(sparkConf, Seconds(3))
 
     // Create direct kafka stream with brokers and topics
     val topicsSet = topics.split(",").toSet
@@ -101,39 +101,19 @@ object DirectKafkaWordCount {
       // Do word count on table using SQL and print it
       val wordCountsDataFrame =
         //sqlContext.sql("select word, count(*) as total from words group by word")
-        sqlContext.sql("select second, s1, s2, count(*) as total from words group by second, s1, s2")
-
-      ///val top = sqlContext.sql("select second, s1 from words where s1 > 1400 group by second, s1 order by second")
-
-      val wordCountsDataFrameStat =
-        sqlContext.sql("select count(s1), avg(s1), min(s1), max(s1) from words")
-//      sqlContext.sql("select count(s1), avg(s1), stddev(s1), min(s1), max(s1) from words group by second, s1")
-
-      val Count =   wordsDataFrame.count()
-      val Mean =    wordsDataFrame.groupBy("s1").mean()
-
-
-  //    val Variance =   wordsDataFrame.select("s1").collect().map(s => (s(1) - Count) * (s(1) - Mean))
+        sqlContext.sql("select second, s1, count(*) as total from words group by second, s1")
 
       println(s"========= $time =========")
       //wordCountsDataFrame.select("second").show()
-      //wordCountsDataFrame.show()
-      //wordCountsDataFrame.describe("second", "s1", "s2").show()
-      ///top.show()
-      wordCountsDataFrame.describe("second", "s1", "s2").show()
-
-    //  println(s"Variance = " + Variance)
-
-      println("Count and Mean = " + Count + " + " + Mean)
-
+      wordCountsDataFrame.show()
     })
 
     // Start the computation
     ssc.start()
     ssc.awaitTermination()
   }
-
 }
 
 /** Case class for converting RDD to DataFrame */
-case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
+//Not needed, already elsewhere
+//case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)

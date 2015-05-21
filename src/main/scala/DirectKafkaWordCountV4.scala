@@ -34,7 +34,7 @@ import org.apache.spark.streaming.kafka._
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 
-object DirectKafkaWordCount {
+object DirectKafkaWordCountV4 {
 
   def main(args: Array[String]) {
     if (args.length < 2) {
@@ -101,11 +101,12 @@ object DirectKafkaWordCount {
       // Do word count on table using SQL and print it
       val wordCountsDataFrame =
         //sqlContext.sql("select word, count(*) as total from words group by word")
-        sqlContext.sql("select second, s1, count(*) as total from words group by second, s1")
+        sqlContext.sql("select second, s1, s2, count(*) as total from words group by second, s1, s2")
 
       println(s"========= $time =========")
       //wordCountsDataFrame.select("second").show()
       wordCountsDataFrame.show()
+      wordCountsDataFrame.describe("second", "s1", "s2").show()
     })
 
     // Start the computation
@@ -114,5 +115,5 @@ object DirectKafkaWordCount {
   }
 }
 
-/** Case class for converting RDD to DataFrame */
-case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
+/** Case class for converting RDD to DataFrame - not needed, exists elsewhere in the directory */
+//case class EEG(second: Double, s1: Double,  s2: Double,  s3: Double,  s4: Double,  s5: Double, s6: Double, s7: Double, s8: Double, s9: Double, s10: Double, s11: Double, s12: Double, s13: Double, s14: Double, s15: Double, s16: Double)
